@@ -9,7 +9,9 @@ Since the CAS has a rather slow processor, a high speed emulator core is mandato
 
 You will need to have the [Hollyhock-2 CFW](https://github.com/SnailMath/hollyhock-2/) installed. After that just copy the most recent CPBoy.hkk from the releases tab into the root directory of your calculator. 
 
-To load your Gameboy ROM, create a directory named "roms" and copy it to that directory on your calculator. The program should automatically detect the roms and create a selection menu.
+To load your Gameboy ROM, create a directory named "roms" and copy it to that to "usr/CPBoy" directory on your calculator. (if the folders "usr" and "usr/CPBoy" do not exist, create them).
+
+The program should automatically detect the roms and create a selection menu.
 
 
 ## Controls
