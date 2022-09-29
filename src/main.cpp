@@ -332,7 +332,7 @@ void main()
 		// print_string("[Dev Build]", 124, 64, 0, 0xFFE0, 0x0000, 1); // color(255, 255, 0)
 
 		Debug_Printf(0, 9 + menuIndex, true, 0, ">");
-		Debug_Printf(0, 8, true, 0, "Detected ROMs (in \\fls0\\roms)");
+		Debug_Printf(0, 8, true, 0, "Detected ROMs (in \\fls0\\usr\\CPBoy\\roms)");
 
 		for (int i = 0; i < dirFiles; i++)
 			Debug_Printf(2, 9 + i, true, 0, "%i. %s", i + 1, fileNames[i]);
@@ -371,7 +371,7 @@ void main()
 	{
 		char rom_file_name[200];
 
-		strcpy(rom_file_name, "\\fls0\\roms\\");
+		strcpy(rom_file_name, "\\fls0\\usr\\CPBoy\\roms\\");
 		strcat(rom_file_name, fileNames[current_filename]);
 
 		// load and run rom until new should be loaded or the emulator is quit
@@ -643,7 +643,7 @@ uint8_t executeRom()
 
 void findFiles() 
 {
-	char g_path[400] = "\\fls0\\roms\\";
+	char g_path[400] = "\\fls0\\usr\\CPBoy\\roms\\";
 	wchar_t g_wpath[400];
 
 	memset(g_wpath, 0, sizeof(g_wpath));
@@ -1349,7 +1349,7 @@ void draw_emulation_menu(uint8_t selected_tab, uint8_t selected_item, const uint
 
 			char numFiles[40];
 			convert_byte_to_string(dirFiles, numFiles);
-			strcat(numFiles, " detected ROMs (in \\fls0\\roms)");
+			strcat(numFiles, " detected ROMs (in \\fls0\\usr\\CPBoy\\roms)");
 
 			print_string(numFiles, 6, main_y + 12, 0, 0x0000, 0x0000, 1);
 
@@ -2512,7 +2512,7 @@ void create_palette(char *palette_name)
 
 void delete_palette(struct palette *palette)
 {
-	char palette_path[200] = "\\fls0\\CPBoy\\palettes\\";
+	char palette_path[200] = "\\fls0\\usr\\CPBoy\\palettes\\";
 	strcat(palette_path, palette->name);
 	strcat(palette_path, ".gbcp");
 
@@ -2524,13 +2524,14 @@ int8_t save_palette(struct palette *palette)
 	// make necessary directories
 	struct stat dstat;
 
-	if(stat("\\fls0\\CPBoy", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy");
+	// should always be true as roms are launched from CPBoy folder
+	if(stat("\\fls0\\usr\\CPBoy", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy");
 	
-	if(stat("\\fls0\\CPBoy}\\palettes", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy\\palettes");
+	if(stat("\\fls0\\usr\\CPBoy\\palettes", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy\\palettes");
 
-	char palette_path[200] = "\\fls0\\CPBoy\\palettes\\";
+	char palette_path[200] = "\\fls0\\usr\\CPBoy\\palettes\\";
 	strcat(palette_path, palette->name);
 	strcat(palette_path, ".gbcp");
 	
@@ -2565,7 +2566,7 @@ void load_palettes()
 	palette_count = 1 + game_palette_exists;
 
 	// get custom palette count
-	const char palette_path[] = "\\fls0\\CPBoy\\palettes\\*.gbcp";
+	const char palette_path[] = "\\fls0\\usr\\CPBoy\\palettes\\*.gbcp";
 	wchar_t w_palette_path[sizeof(palette_path)];
 
 	memset(w_palette_path, 0, sizeof(w_palette_path));
@@ -2615,7 +2616,7 @@ void load_palettes()
 
 	while(ret >= 0) 
 	{
-		char palette_file[200] = "\\fls0\\CPBoy\\palettes\\";
+		char palette_file[200] = "\\fls0\\usr\\CPBoy\\palettes\\";
 		char temp[100];
 		uint8_t file_name_size = 0;
 
@@ -2692,7 +2693,7 @@ void load_savestates()
 	savestate_count = 0;
 
 	// get all savestates
-	char savestate_path[48] = "\\fls0\\CPBoy\\savestates\\";
+	char savestate_path[48] = "\\fls0\\usr\\CPBoy_savestates\\";
 	strcat(savestate_path, rom_name);
 	strcat(savestate_path, "\\*.gbss");
 
@@ -2733,7 +2734,7 @@ void load_savestates()
 
 	while(ret >= 0) 
 	{
-		char savestate_file[200] = "\\fls0\\CPBoy\\savestates\\";
+		char savestate_file[200] = "\\fls0\\usr\\CPBoy_savestates\\";
 		char temp[100];
 
 		uint8_t savestate_name_buffer[SAVESTATE_NAME_SIZE];
@@ -2871,7 +2872,7 @@ void create_savestate(uint16_t (*preview_frame)[LCD_WIDTH])
 
 	// write buffer to a file
 	char rom_name[17];
-	char savestate_path[146] = "\\fls0\\CPBoy\\savestates\\";
+	char savestate_path[146] = "\\fls0\\usr\\CPBoy_savestates\\";
 
 	gb_get_rom_name(&gb, rom_name);
 	strcat(savestate_path, rom_name);
@@ -2879,11 +2880,12 @@ void create_savestate(uint16_t (*preview_frame)[LCD_WIDTH])
 	// make dirs
 	struct stat dstat;
 
-	if(stat("\\fls0\\CPBoy", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy");	
+	// should always be true as roms are launched from CPBoy folder
+	if(stat("\\fls0\\usr\\CPBoy", &dstat) != 0)
+		mkdir("\\fls0usr\\CPBoy");	
 		
-	if(stat("\\fls0\\CPBoy\\savestates", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy\\savestates");
+	if(stat("\\fls0\\usr\\CPBoy_savestates", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy_savestates");
 
 	if(stat(savestate_path, &dstat) != 0)
 		mkdir(savestate_path);
@@ -2999,14 +3001,15 @@ int8_t save_controls(uint32_t (*controls_ptr)[2])
 	// make user directory
 	struct stat dstat;
 
-	if(stat("\\fls0\\CPBoy", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy");
+	// should always be true as roms are launched from CPBoy folder
+	if(stat("\\fls0\\usr\\CPBoy", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy");
 
-	if(stat("\\fls0\\CPBoy\\user", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy\\user");
+	if(stat("\\fls0\\usr\\CPBoy\\user", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy\\user");
 
 	// create save file
-	int f = open("\\fls0\\CPBoy\\user\\controls.cpbc", OPEN_WRITE | OPEN_CREATE);
+	int f = open("\\fls0\\usr\\CPBoy\\user\\controls.cpbc", OPEN_WRITE | OPEN_CREATE);
 
 	if(f < 0)
 		return -1;
@@ -3046,7 +3049,7 @@ void load_controls(uint32_t (*controls_ptr)[2])
 	memset(controls_ptr, 0, sizeof(controls_ptr) * CONTROLS_COUNT);
 
 	// open save file
-	int f = open("\\fls0\\CPBoy\\user\\controls.cpbc", OPEN_READ);
+	int f = open("\\fls0\\usr\\CPBoy\\user\\controls.cpbc", OPEN_READ);
 
 	if(f >= 0)
 	{
@@ -3081,11 +3084,11 @@ int8_t save_rom_config(bool frameskip, bool interlace, bool turbo_e,
 	// make user directory
 	struct stat dstat;
 
-	if(stat("\\fls0\\CPBoy", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy");
+	if(stat("\\fls0\\usr\\CPBoy", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy");
 
-	if(stat("\\fls0\\CPBoy\\user", &dstat) != 0)
-		mkdir("\\fls0\\CPBoy\\user");
+	if(stat("\\fls0\\usr\\CPBoy\\user", &dstat) != 0)
+		mkdir("\\fls0\\usr\\CPBoy\\user");
 
 	char rom_config_file_name[38];
 
@@ -3417,8 +3420,8 @@ uint8_t write_cart_ram_file(const char *save_file_name, uint8_t **dest,
 	// make save directory
 	struct stat dstat;
 
-	if(stat("\\fls0\\gb-saves", &dstat) != 0)
-		mkdir("\\fls0\\gb-saves");
+	if(stat("\\fls0\\usr\\saves\\CPBoy", &dstat) != 0)
+		mkdir("\\fls0\\usr\\saves\\CPBoy");
 
 	int f;
 
@@ -3443,7 +3446,7 @@ uint8_t write_cart_ram_file(const char *save_file_name, uint8_t **dest,
  */
 void get_cart_ram_file_name(char *name_buffer)
 {
-	strcpy(name_buffer, "\\fls0\\gb-saves\\");
+	strcpy(name_buffer, "\\fls0\\usr\\saves\\CPBoy\\\\");
 
 	char temp[17];
 
@@ -3459,7 +3462,7 @@ void get_cart_ram_file_name(char *name_buffer)
  */
 void get_rom_config_file_name(char *name_buffer)
 {
-	strcpy(name_buffer, "\\fls0\\CPBoy\\user\\");
+	strcpy(name_buffer, "\\fls0\\usr\\CPBoy\\user\\");
 
 	char temp[17];
 
