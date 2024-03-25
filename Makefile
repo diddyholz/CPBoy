@@ -9,7 +9,7 @@ endif
 AS:=sh4-elf-as
 AS_FLAGS:=
 
-COMMON_FLAGS:=-ffreestanding -fshort-wchar -O2 -m4a-nofpu 
+COMMON_FLAGS:=-flto -ffreestanding -fshort-wchar -O2 -m4a-nofpu 
 INCLUDES:=-I $(SDK_DIR)/include/ -I $(SDK_DIR)/newlib/sh-elf/include
 WARNINGS:=-Wall -Wextra
 
