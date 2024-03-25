@@ -20,7 +20,7 @@ CXX:=sh4-elf-g++
 CXX_FLAGS:=-fno-exceptions -fno-rtti -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
 LD:=sh4-elf-gcc
-LD_FLAGS:=-nostartfiles -m4a-nofpu -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib
+LD_FLAGS:=-nostartfiles --specs=nosys.specs -m4a-nofpu -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib
 
 READELF:=sh4-elf-readelf
 OBJCOPY:=sh4-elf-objcopy
