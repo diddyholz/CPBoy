@@ -19,7 +19,7 @@ CC_FLAGS:=$(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 CXX:=sh4-elf-g++
 CXX_FLAGS:=-fno-exceptions -fno-rtti -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-LD:=sh4-elf-gcc
+LD:=sh4-elf-g++
 LD_FLAGS:=-nostartfiles -m4a-nofpu -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib
 
 READELF:=sh4-elf-readelf
