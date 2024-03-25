@@ -6,7 +6,7 @@ ifndef SDK_DIR
 $(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
 endif
 
-AS:=sh4-elf-as
+AS:=sh4-elf-gcc
 AS_FLAGS:=
 
 COMMON_FLAGS:=-ffreestanding -fshort-wchar -O2 -m4a-nofpu 
