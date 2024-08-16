@@ -17,7 +17,7 @@
 #include "../font.h"
 #include "../../core/emulator.h"
 #include "../../core/controls.h"
-#include "../../core/peanut_gb_header.h"
+#include "../../core/peanut_gb.h"
 #include "../../core/error.h"
 #include "../../helpers/macros.h"
 #include "../../helpers/functions.h"

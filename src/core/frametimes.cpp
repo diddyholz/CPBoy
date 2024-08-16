@@ -1,7 +1,7 @@
 #include "frametimes.h"
 
 #include "emulator.h"
-#include "peanut_gb_header.h"
+#include "peanut_gb.h"
 #include "preferences.h"
 #include "../cas/cpu/cmt.h"
 #include "../cas/cpu/cpg.h"

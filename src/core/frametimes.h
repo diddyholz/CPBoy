@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "peanut_gb_header.h"
+#include "peanut_gb.h"
 
 void frametime_counter_set(struct gb_s *gb);
 

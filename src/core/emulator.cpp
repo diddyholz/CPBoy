@@ -181,7 +181,16 @@ void lcd_draw_line(struct gb_s *gb, const uint32_t pixels[160],
 
   DMAC_CHCR_0->raw = 0;
   
-  *DMAC_SAR_0   = (uint32_t)pixels;                            // P4 Area (OC-Memory) => Physical address is same as virtual
+#if PEANUT_FULL_GBC_SUPPORT
+    if (gb->cgb.cgbMode){
+        *DMAC_SAR_0   = (uint32_t)cgb.fixPalette;
+    }
+    else {
+#endif
+        *DMAC_SAR_0   = (uint32_t)pixels;                            // P4 Area (OC-Memory) => Physical address is same as virtual
+#if PEANUT_FULL_GBC_SUPPORT
+    }
+#endif
   *DMAC_DAR_0   = (uint32_t)SCREEN_DATA_REGISTER & 0x1FFFFFFF; // P2 Area => Physical address is virtual with 3 ms bits cleared
   *DMAC_TCR_0   = (CAS_LCD_WIDTH * 2) / 32 * 2;                // (Pixels per line * bytes per pixel) / dmac operation bytes * 2 lines      
   *DMAC_TCRB_0  = ((CAS_LCD_WIDTH * 2 / 32) << 16) 
