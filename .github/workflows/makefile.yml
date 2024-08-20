@@ -1,0 +1,49 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        wget https://gnu.askapache.com/binutils/binutils-2.36.tar.gz 
+        tar -xzf binutils-2.36.tar.gz 
+        wget http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-11.1.0/gcc-11.1.0.tar.gz 
+        tar -xzf gcc-11.1.0.tar.gz
+        # build binutils
+        cd binutils-2.36 
+        mkdir build 
+        cd build 
+        ../configure --target=sh4-elf --prefix="$HOME/opt/cross" --with-sysroot --disable-nls --disable-werror 
+        make -j$(nproc) 
+        sudo make install
+        cd gcc-11.1.0 
+        contrib/download_prerequisites 
+        mkdir build 
+        cd build 
+        ../configure --target=sh4-elf --prefix="$HOME/opt/cross" --disable-nls --enable-languages=c,c++ --without-headers --with-multilib-list=m4-nofpu
+        make all-gcc -j$(nproc) 
+        make all-target-libgcc -j$(nproc) 
+        sudo make install-gcc 
+        sudo make install-target-libgcc
+        cd $HOME 
+        git clone https://github.com/SnailMath/hollyhock-2.git 
+        export PATH="$PATH:$HOME/opt/cross/bin"
+        export SDK_DIR="$HOME/hollyhock-2/sdk" 
+        source .bashrc 
+        make -C $HOME/hollyhock-2/sdk
+        make bin
+        git add dist
+        git commit -m "compiled"
+        git push
+        
