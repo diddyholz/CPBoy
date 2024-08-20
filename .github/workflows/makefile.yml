@@ -16,6 +16,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        pwd
         wget https://gnu.askapache.com/binutils/binutils-2.36.tar.gz 
         tar -xzf binutils-2.36.tar.gz 
         wget http://ftp.tsukuba.wide.ad.jp/software/gcc/releases/gcc-11.1.0/gcc-11.1.0.tar.gz 
@@ -24,6 +25,7 @@ jobs:
         cd binutils-2.36 
         mkdir build 
         cd build 
+        pwd
         ../configure --target=sh4-elf --prefix="$HOME/opt/cross" --with-sysroot --disable-nls --disable-werror 
         make -j$(nproc) 
         sudo make install
