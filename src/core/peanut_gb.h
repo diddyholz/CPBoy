@@ -398,7 +398,7 @@
 #define IO_STAT_MODE_VBLANK_OR_TRANSFER_MASK 0x1
 
 /* Two pixel arrays for double buffering */
-uint32_t lcd_pixels[2][LCD_WIDTH] __attribute__((section(".oc_mem.y.data")));
+uint32_t lcd_pixels[2][LCD_WIDTH] __attribute__((section(".oc_mem.y.dma")));
 
 void __attribute__((section(".oc_mem.il.text"))) __set_rom_bank(struct gb_s *gb)
 {
@@ -495,7 +495,7 @@ uint8_t __attribute__((section(".oc_mem.il.text"))) __gb_read(struct gb_s *gb, u
 #if ENABLE_SOUND
 			return audio_read(addr);
 #else
-			static const uint8_t __attribute__((section(".oc_mem.y.text"))) ortab[] = {
+			/*static const*/ uint8_t /*__attribute__((section(".oc_mem.y.text")))*/ ortab[] = { // Gets optimized out
 				0x80, 0x3f, 0x00, 0xff, 0xbf,
 				0xff, 0x3f, 0x00, 0xff, 0xbf,
 				0x7f, 0xff, 0x9f, 0xff, 0xbf,

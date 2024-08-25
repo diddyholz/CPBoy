@@ -62,7 +62,7 @@ uint8_t _read_mcs(const char *dir, const char *name, void **buf, uint32_t *size,
 
 uint8_t _write_file(const char *file, void *buf, size_t len, const char *err_file, uint32_t err_line)
 {
-  int32_t fd = open(file, OPEN_WRITE | OPEN_CREATE);
+  int32_t fd = File_Open(file, FILE_OPEN_WRITE | FILE_OPEN_CREATE);
 
   char err_info[ERROR_MAX_INFO_LEN];
   strlcpy(err_info, "w: ", sizeof(err_info));
@@ -74,15 +74,15 @@ uint8_t _write_file(const char *file, void *buf, size_t len, const char *err_fil
     return 1;
   }
 
-	if (write(fd, buf, len) < 0)
+	if (File_Write(fd, buf, len) < 0)
   {
-	  close(fd);
+	  File_Close(fd);
 
     _set_error(EFWRITE, err_file, err_line, err_info);
     return 1;
   }
 
-	if (close(fd) < 0)
+	if (File_Close(fd) < 0)
   {
     _set_error(EFCLOSE, err_file, err_line, err_info);
     return 1;
@@ -93,7 +93,7 @@ uint8_t _write_file(const char *file, void *buf, size_t len, const char *err_fil
 
 uint8_t _read_file(const char *file, void *buf, size_t len, const char *err_file, uint32_t err_line)
 {
-  int32_t fd = open(file, OPEN_READ);
+  int32_t fd = File_Open(file, FILE_OPEN_READ);
 
   char err_info[ERROR_MAX_INFO_LEN];
   strlcpy(err_info, "r: ", sizeof(err_info));
@@ -105,15 +105,15 @@ uint8_t _read_file(const char *file, void *buf, size_t len, const char *err_file
     return 1;
   }
 
-	if (read(fd, buf, len) < 0)
+	if (File_Read(fd, buf, len) < 0)
   {
-	  close(fd);
+	  File_Close(fd);
 
     _set_error(EFREAD, err_file, err_line, err_info);
     return 1;
   }
 
-	if (close(fd) < 0)
+	if (File_Close(fd) < 0)
   {
     _set_error(EFCLOSE, err_file, err_line, err_info);
     return 1;
@@ -124,7 +124,7 @@ uint8_t _read_file(const char *file, void *buf, size_t len, const char *err_file
 
 uint8_t _delete_file(const char *file, const char *err_file, uint32_t err_line) 
 {
-	if (remove(file) < 0)
+	if (File_Remove(file) < 0)
   {
     _set_error(EFCLOSE, err_file, err_line, file);
     return 1;
@@ -135,7 +135,7 @@ uint8_t _delete_file(const char *file, const char *err_file, uint32_t err_line)
 
 uint8_t _get_file_size(const char *file, size_t *size, const char *err_file, uint32_t err_line)
 {
-	int32_t fd = open(file, OPEN_READ);
+	int32_t fd = File_Open(file, FILE_OPEN_READ);
   
   char err_info[ERROR_MAX_INFO_LEN];
   strlcpy(err_info, "r: ", sizeof(err_info));
@@ -147,15 +147,15 @@ uint8_t _get_file_size(const char *file, size_t *size, const char *err_file, uin
 		return 1;
   }
 
-	struct stat file_stat;
+	struct File_Stat file_stat;
 
-	if (fstat(fd, &file_stat) < 0)
+	if (File_Fstat(fd, &file_stat) < 0)
   {
     _set_error(EFREAD, err_file, err_line, err_info);
 		return 1;
   }
 
-	if (close(fd) < 0)
+	if (File_Close(fd) < 0)
   {
     _set_error(EFCLOSE, err_file, err_line, err_info);
 		return 1;
@@ -175,14 +175,14 @@ uint8_t find_files(const char *path, char (*buf)[MAX_FILENAME_LEN], uint8_t max)
 
   wchar_t wpath[MAX_FILENAME_LEN];
   wchar_t filename[MAX_FILENAME_LEN];
-	struct findInfo info;
+	struct File_FindInfo info;
 	int handle;
   int32_t ret;
 	uint8_t file_count = 0;
 
   char_to_wchar(wpath, path);
 
-	ret = findFirst(wpath, &handle, filename, &info);
+	ret = File_FindFirst(wpath, &handle, filename, &info);
 
 	while(ret >= 0) 
 	{
@@ -199,10 +199,10 @@ uint8_t find_files(const char *path, char (*buf)[MAX_FILENAME_LEN], uint8_t max)
     }
 		
 		//serch the next
-		ret = findNext(handle, filename, &info);
+		ret = File_FindNext(handle, filename, &info);
 	}
 
-	findClose(handle);
+	File_FindClose(handle);
 
   return file_count;
 }

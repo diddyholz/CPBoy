@@ -31,7 +31,7 @@
 /* Global arrays in OC-Memory */
 uint8_t gb_wram[WRAM_SIZE];
 uint8_t gb_vram[VRAM_SIZE] __attribute__((section(".oc_mem.x")));
-uint8_t gb_oam[OAM_SIZE] __attribute__((section(".oc_mem.y.data")));
+uint8_t gb_oam[OAM_SIZE] __attribute__((section(".oc_mem.y.dma")));
 uint8_t gb_hram_io[HRAM_IO_SIZE] __attribute__((section(".oc_mem.y.data")));
 
 uint8_t execution_handle_input(struct gb_s *gb)
@@ -440,7 +440,7 @@ uint8_t run_emulator(struct gb_s *gb, emu_preferences *prefs)
 uint8_t load_rom(emu_preferences *prefs)
 {
   char rom_filename[MAX_FILENAME_LEN] = DIRECTORY_ROM "\\";
-  strncat(rom_filename, prefs->current_filename, MAX_FILENAME_LEN);
+  strncat(rom_filename, prefs->current_filename, MAX_FILENAME_LEN - 1);
   rom_filename[MAX_FILENAME_LEN - 1] = '\0';
 
   size_t rom_size;

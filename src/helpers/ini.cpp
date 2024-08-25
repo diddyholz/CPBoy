@@ -25,7 +25,7 @@ void *double_space(void *src, uint32_t *size, size_t elem_size)
   // Allocate double current size
   *size = (*size == 0)? 1 : *size * 2;
 
-  void *new_space = hhk::malloc((*size) * elem_size);
+  void *new_space = malloc((*size) * elem_size);
 
   if (!new_space) 
   {
@@ -45,7 +45,7 @@ void *double_space(void *src, uint32_t *size, size_t elem_size)
   if (old_size != 0)
   {
     memcpy(new_space, src, old_size * elem_size);
-    hhk::free(src);
+    free(src);
   }
 
   return new_space;     
@@ -357,11 +357,11 @@ void free_ini_file(ini_file *file)
 {
   for (uint32_t i = 0; i < file->section_count; i++)
   {
-    hhk::free(file->sections[i].keys);
+    free(file->sections[i].keys);
     file->sections->keys = nullptr;
   }
 
-  hhk::free(file->sections);
+  free(file->sections);
   file->sections = nullptr;
 }
 

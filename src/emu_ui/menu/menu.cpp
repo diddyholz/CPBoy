@@ -245,7 +245,7 @@ menu *prepare_load_menu_info(menu *menu)
   menu->selected_tab = 0;
   menu->selected_item = 0;
   menu->tab_count = 1;
-  menu->tabs = (menu_tab *)hhk::malloc(sizeof(menu_tab));
+  menu->tabs = (menu_tab *)malloc(sizeof(menu_tab));
 
   if (!menu->tabs) 
   {
@@ -273,7 +273,7 @@ menu *prepare_menu_info(menu *menu, gb_s *gb)
   menu->selected_tab = 0;
   menu->selected_item = 0;
   menu->tab_count = 4;
-  menu->tabs = (menu_tab *)hhk::malloc(menu->tab_count * sizeof(menu_tab));
+  menu->tabs = (menu_tab *)malloc(menu->tab_count * sizeof(menu_tab));
 
   if (!menu->tabs) 
   {
@@ -309,11 +309,11 @@ void cleanup_menu_info(menu *menu)
   // Free the items for each tab
   for (uint8_t i = 0; i < menu->tab_count; i++)
   {
-    hhk::free(menu->tabs[i].items);
+    free(menu->tabs[i].items);
   }
 
   // Free the tabs array
-  hhk::free(menu->tabs);
+  free(menu->tabs);
 }
 
 uint8_t load_menu(emu_preferences *prefs)
@@ -399,7 +399,7 @@ uint8_t load_menu(emu_preferences *prefs)
 uint8_t emulation_menu(struct gb_s *gb, bool preview_only) 
 {
   // Backup gb frame and display pause overlay
-  uint16_t *gb_frame_backup = (uint16_t *)hhk::malloc(LCD_HEIGHT * LCD_WIDTH * sizeof(uint16_t));
+  uint16_t *gb_frame_backup = (uint16_t *)malloc(LCD_HEIGHT * LCD_WIDTH * sizeof(uint16_t));
   
   if (gb_frame_backup)
   {
@@ -514,7 +514,7 @@ uint8_t emulation_menu(struct gb_s *gb, bool preview_only)
       }
     }
 
-    hhk::free(gb_frame_backup);
+    free(gb_frame_backup);
   }
   
 	draw_menu_overlay();

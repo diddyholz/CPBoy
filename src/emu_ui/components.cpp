@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
 #include <sdk/calc/calc.hpp>
 #include <sdk/os/debug.hpp>
 #include "../emu_ui/input.h"
@@ -212,7 +213,7 @@ void ok_alert(const char *title, const char *subtitle, const char *text, uint16_
   uint16_t background, uint16_t border) 
 {
   // Backup LCD and darken background
-  uint16_t *lcd_backup = (uint16_t *)hhk::malloc(CAS_LCD_HEIGHT * CAS_LCD_WIDTH * sizeof(uint16_t));
+  uint16_t *lcd_backup = (uint16_t *)malloc(CAS_LCD_HEIGHT * CAS_LCD_WIDTH * sizeof(uint16_t));
 
   if (lcd_backup)
   {
@@ -293,6 +294,6 @@ void ok_alert(const char *title, const char *subtitle, const char *text, uint16_
   if (lcd_backup)
   {
     memcpy(vram, lcd_backup, CAS_LCD_HEIGHT * CAS_LCD_WIDTH * sizeof(uint16_t));
-    hhk::free(lcd_backup);
+    free(lcd_backup);
   }
 }

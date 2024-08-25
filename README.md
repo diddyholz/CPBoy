@@ -52,7 +52,7 @@ If you encounter any issues with games, I will add them to this list.
 
 ## Building
 
-If you want to build the emulator from source you will need the [Hollyhock-2 SDK + Newlib](https://github.com/SnailMath/hollyhock-2/). Then, run ´make´ in your terminal.
+If you want to build the emulator from source you will need the [Renamed Hollyhock-3 SDK + Newlib](https://github.com/QBos07/hollyhock-3/tree/rename-symbols). Then, run ´make´ in your terminal.
 
 
 ## License
