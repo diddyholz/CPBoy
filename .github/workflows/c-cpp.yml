@@ -1,0 +1,27 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/QBos07/hollyhock-3
+      credentials:
+       username: ${{ github.actor }}
+       password: ${{ secrets.github_token }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: make
+      run: make
+    - uses: actions/upload-artifact@v4
+      with:
+        path: dist
