@@ -31,7 +31,7 @@
 /* Global arrays in OC-Memory */
 uint8_t gb_wram[WRAM_SIZE];
 uint8_t gb_vram[VRAM_SIZE] __attribute__((section(".oc_mem.x")));
-uint8_t gb_oam[OAM_SIZE] __attribute__((section(".oc_mem.y.data")));
+uint8_t gb_oam[OAM_SIZE] __attribute__((section(".oc_mem.y.dma")));
 uint8_t gb_hram_io[HRAM_IO_SIZE] __attribute__((section(".oc_mem.y.data")));
 
 uint8_t execution_handle_input(struct gb_s *gb)
@@ -146,7 +146,7 @@ void set_overclock(struct gb_s *gb, bool enabled)
 void lcd_draw_line(struct gb_s *gb, const uint32_t pixels[160],
   const uint_fast8_t line)
 {
-  emu_preferences *preferences = (emu_preferences *)gb->direct.priv;
+	emu_preferences *preferences = (emu_preferences *)gb->direct.priv;
 
   // Wait for previous DMA to complete
   dma_wait(DMAC_CHCR_0);
@@ -180,8 +180,22 @@ void lcd_draw_line(struct gb_s *gb, const uint32_t pixels[160],
   tmp_chcr.DE   = 1;
 
   DMAC_CHCR_0->raw = 0;
-  
+#if PEANUT_FULL_GBC_SUPPORT
+	if (gb->cgb.cgbMode)
+	{
+		uint32_t pixels_cgb[160];
+		for (unsigned int x = 0; x < LCD_WIDTH; x++)
+		{
+			 pixels_cgb[x]=gb->cgb.fixPalette[pixels[x]];
+		} 
+		*DMAC_SAR_0   = (uint32_t)pixels_cgb; 
+	}
+	else {
+#endif
   *DMAC_SAR_0   = (uint32_t)pixels;                            // P4 Area (OC-Memory) => Physical address is same as virtual
+#if PEANUT_FULL_GBC_SUPPORT
+	}
+#endif
   *DMAC_DAR_0   = (uint32_t)SCREEN_DATA_REGISTER & 0x1FFFFFFF; // P2 Area => Physical address is virtual with 3 ms bits cleared
   *DMAC_TCR_0   = (CAS_LCD_WIDTH * 2) / 32 * 2;                // (Pixels per line * bytes per pixel) / dmac operation bytes * 2 lines      
   *DMAC_TCRB_0  = ((CAS_LCD_WIDTH * 2 / 32) << 16) 
@@ -440,7 +454,7 @@ uint8_t run_emulator(struct gb_s *gb, emu_preferences *prefs)
 uint8_t load_rom(emu_preferences *prefs)
 {
   char rom_filename[MAX_FILENAME_LEN] = DIRECTORY_ROM "\\";
-  strncat(rom_filename, prefs->current_filename, MAX_FILENAME_LEN);
+  strncat(rom_filename, prefs->current_filename, MAX_FILENAME_LEN - 1);
   rom_filename[MAX_FILENAME_LEN - 1] = '\0';
 
   size_t rom_size;

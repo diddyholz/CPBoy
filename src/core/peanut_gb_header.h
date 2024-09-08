@@ -98,6 +98,10 @@
 # define PEANUT_GB_USE_INTRINSICS 1
 #endif
 
+#ifndef PEANUT_FULL_GBC_SUPPORT
+# define PEANUT_FULL_GBC_SUPPORT 1
+#endif
+
 /* Only include function prototypes. At least one file must *not* have this
  * defined. */
 #define PEANUT_GB_HEADER_ONLY
@@ -112,8 +116,13 @@
 #define ANY_INTR	0x1F
 
 /* Memory section sizes for DMG */
+#if PEANUT_FULL_GBC_SUPPORT
+#define WRAM_SIZE	0x8000
+#define VRAM_SIZE	0x4000
+#else
 #define WRAM_SIZE	0x2000
 #define VRAM_SIZE	0x2000
+#endif
 #define HRAM_IO_SIZE	0x0100
 #define OAM_SIZE	0x00A0
 
@@ -600,6 +609,30 @@ struct gb_s
     uint32_t frame_count;
     uint8_t interlace_count : 1;
   } display;
+#if PEANUT_FULL_GBC_SUPPORT
+	/* Game Boy Color Mode*/
+	struct {
+		uint8_t cgbMode;
+		uint8_t doubleSpeed;
+		uint8_t doubleSpeedPrep;
+		uint8_t wramBank;
+		uint16_t wramBankOffset;
+		uint8_t vramBank;
+		uint16_t vramBankOffset;
+		uint16_t fixPalette[0x40];  //BG then OAM palettes fixed for the screen
+		uint8_t OAMPalette[0x40];
+		uint8_t BGPalette[0x40];
+		uint8_t OAMPaletteID;
+		uint8_t BGPaletteID;
+		uint8_t OAMPaletteInc;
+		uint8_t BGPaletteInc;
+		uint8_t dmaActive;
+		uint8_t dmaMode;
+		uint8_t dmaSize;
+		uint16_t dmaSource;
+		uint16_t dmaDest;
+	} cgb;
+#endif
 
   /**
    * Variables that may be modified directly by the front-end.

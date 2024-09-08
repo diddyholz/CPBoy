@@ -18,7 +18,7 @@
 #define DIRECTORY_ROM      DIRECTORY_MAIN "roms"
 #define DIRECTORY_BIN      DIRECTORY_MAIN "bin"
 
-#define EXTENSION_ROM     ".gb"
+#define EXTENSION_ROM     ".gbc"
 
 #define TOGGLE(value) ((value) = !(value))
 

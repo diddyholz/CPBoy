@@ -1,0 +1,5 @@
+CompileFlags:
+  Add: [
+      "-I/opt/cross/hollyhock-2/sdk/include/",
+      "-I/opt/cross/hollyhock-2/sdk/newlib/sh-elf/include/"
+  ]

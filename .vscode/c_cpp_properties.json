@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/cross/hollyhock-2/sdk/include/**",
+                "/opt/cross/hollyhock-2/sdk/newlib/sh-elf/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/local/bin/sh4-elf-g++",
+            "compilerArgs": [
+                "-ffreestanding",
+                "-fno-exceptions",
+                "-fno-rtti",
+                "-fshort-wchar",
+                "-Wall",
+                "-Wextra",
+                "-O2",
+                "-I $(SDK_DIR)/include/",
+                "-m4a-nofpu",
+                "-I $(SDK_DIR)/newlib/sh-elf/include/"
+            ],
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}

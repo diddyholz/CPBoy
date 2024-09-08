@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+      - new-master
+      - dev-test
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CP_DEV_IS_COOL: true
+
+jobs:
+  build:
+    name: Create a new release
+    runs-on: ubuntu-latest
+    container: ghcr.io/zai1208/sh4-devenv-gitpod:master
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          echo "Runs inside a container"
+          make
+          echo "dev" | sudo -S apt-get install zip
+          zip -r CPBoy.zip dist
+          
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: |
+            New release of CPBoy
+          draft: false
+          prerelease: false
+      - name: Upload ELF Asset
+        id: upload-elf-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/CPBoy.elf
+          asset_name: CPBoy.elf
+          asset_content_type: application/octet-stream
+      - name: Upload dist Asset
+        id: upload-dist-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: CPBoy.zip
+          asset_name: CPBoy.zip
+          asset_content_type: application/octet-stream
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist

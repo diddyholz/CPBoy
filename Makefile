@@ -6,24 +6,24 @@ ifndef SDK_DIR
 $(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
 endif
 
-AS:=sh4-elf-as
+AS:=sh4aeb-elf-gcc
 AS_FLAGS:=
 
-COMMON_FLAGS:=-ffreestanding -fshort-wchar -O2 -m4a-nofpu 
-INCLUDES:=-I $(SDK_DIR)/include/ -I $(SDK_DIR)/newlib/sh-elf/include
+COMMON_FLAGS:=-fshort-wchar -O2 -m4a-nofpu -ffunction-sections -fdata-sections #-flto
+INCLUDES:=-I $(SDK_DIR)/include/
 WARNINGS:=-Wall -Wextra
 
-CC:=sh4-elf-gcc
+CC:=sh4aeb-elf-gcc
 CC_FLAGS:=$(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-CXX:=sh4-elf-g++
+CXX:=sh4aeb-elf-g++
 CXX_FLAGS:=-fno-exceptions -fno-rtti -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-LD:=sh4-elf-gcc
-LD_FLAGS:=-nostartfiles -m4a-nofpu -Wno-undef -L$(SDK_DIR)/newlib/sh-elf/lib
+LD:=$(CXX)
+LD_FLAGS:= $(COMMON_FLAGS) $(WARNINGS) -Wno-undef -Wl,--gc-sections
 
-READELF:=sh4-elf-readelf
-OBJCOPY:=sh4-elf-objcopy
+READELF:=sh4aeb-elf-readelf
+OBJCOPY:=sh4aeb-elf-objcopy
 
 SOURCEDIR = src
 BUILDDIR = obj
@@ -52,7 +52,7 @@ clean:
 	rm -rf $(BUILDDIR) $(OUTDIR)
 
 $(APP_BIN): $(APP_ELF)
-	$(OBJCOPY) --remove-section=.oc_mem* --output-target=binary $(APP_ELF) $@
+	$(OBJCOPY) --remove-section=.oc_mem* --set-section-flags .bss=alloc,load,contents,data --output-target=binary $(APP_ELF) $@
 
 $(IL_BIN): $(APP_ELF)
 	mkdir -p $(dir $@)
@@ -62,19 +62,19 @@ $(Y_BIN): $(APP_ELF)
 	mkdir -p $(dir $@)
 	$(OBJCOPY) --only-section=.oc_mem.y* --output-target=binary $(APP_ELF) $@
 
-$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker.ld
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/libsdk.a linker.ld
 	mkdir -p $(dir $@)
-	$(LD) -T linker.ld -o $@ $(LD_FLAGS) $(OBJECTS) $(SDK_DIR)/sdk.o
+	$(LD) -T linker.ld -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS) -L$(SDK_DIR) -lsdk
 
 # We're not actually building sdk.o, just telling the user they need to do it
 # themselves. Just using the target to trigger an error when the file is
 # required but does not exist.
-$(SDK_DIR)/sdk.o:
-	$(error You need to build the SDK before using it. Run make in the SDK directory, and check the README.md in the SDK directory for more information)
+$(SDK_DIR)/libsdk.a:
+	@echo "You need to build the SDK before using it. Run make in the SDK directory, and check the README.md in the SDK directory for more information" && exit 1
 
 $(BUILDDIR)/%.o: %.s
 	mkdir -p $(dir $@)
-	$(AS) $< -o $@ $(AS_FLAGS)
+	$(AS) -c $< -o $@ $(AS_FLAGS)
 
 $(BUILDDIR)/%.o: %.c
 	mkdir -p $(dir $@)
